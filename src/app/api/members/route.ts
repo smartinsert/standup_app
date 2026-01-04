@@ -41,7 +41,6 @@ export async function POST(request: Request) {
     const info = stmt.run(name, region, role || 'member');
     return NextResponse.json({ id: info.lastInsertRowid }, { status: 201 });
   } catch (error: any) {
-    // Handle unique constraint violation
     if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
         return NextResponse.json({ error: 'Member already exists' }, { status: 409 });
     }

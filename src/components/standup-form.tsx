@@ -26,7 +26,6 @@ export default function StandupForm({ onStandupCreated, selectedDate }: StandupF
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
 
-  // Derive if editing is allowed: 
   const isToday = selectedDate === new Date().toISOString().split('T')[0];
   const canSubmit = !!currentUser && isToday;
 
@@ -47,7 +46,6 @@ export default function StandupForm({ onStandupCreated, selectedDate }: StandupF
               blockers: entry.blockers || ''
             });
           } else {
-            // Reset if no entry found
             setFormData({ yesterday: '', today: '', blockers: '' });
           }
         }
@@ -80,11 +78,6 @@ export default function StandupForm({ onStandupCreated, selectedDate }: StandupF
       });
 
       if (res.ok) {
-        // We generally keep the values in form data if it was a successful save (update or create)
-        // But if creating new, maybe reset? Actually usually we want to see what we posted.
-        // The original code reset it: setFormData({ yesterday: '', today: '', blockers: '' });
-        // But since we reload the data anyway, or if it's "live", keeping it might be better?
-        // Original behavior:
         setFormData({ yesterday: '', today: '', blockers: '' });
         
         if (onStandupCreated) onStandupCreated();
@@ -112,7 +105,7 @@ export default function StandupForm({ onStandupCreated, selectedDate }: StandupF
   }
 
   if (!isToday) {
-    return null; // Don't show form for past dates
+    return null;
   }
 
   return (

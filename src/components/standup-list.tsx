@@ -15,11 +15,6 @@ export default function StandupList({ refreshTrigger, selectedDate, selectedRegi
   const [standups, setStandups] = useState<Standup[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Helper to check permissions
-  // "The team member other than the admin should be able to view and edit only their update but can only view updates of other members in the past date"
-  // Implication: 
-  // - Today: I see ONLY mine (unless Admin).
-  // - Past: I see EVERYONE.
   const isToday = selectedDate === new Date().toISOString().split('T')[0];
   const isAdmin = currentUser?.role === 'admin';
 
@@ -27,8 +22,6 @@ export default function StandupList({ refreshTrigger, selectedDate, selectedRegi
     const fetchStandups = async () => {
       setIsLoading(true);
       try {
-        // We fetch ALL for the date, then filter in UI (or we could filter in API).
-        // Since API logic is complex, let's pass date and handle logic here mainly for display.
         const res = await fetch(`/api/standups?date=${selectedDate}`);
         if (res.ok) {
           const data: Standup[] = await res.json();
@@ -44,20 +37,12 @@ export default function StandupList({ refreshTrigger, selectedDate, selectedRegi
     fetchStandups();
   }, [selectedDate, refreshTrigger]);
 
-  // Client-side filtering for Region and Permissions
   const filteredStandups = standups.filter(standup => {
-    // 1. Region Filter
     if (selectedRegion) {
-        // Find the member for this standup to check region
-        // We can use the 'users' join from API or look up in 'members' context
-        // API returns 'region' now (checked route.js)
         if (standup.region !== selectedRegion) return false;
     }
 
-    // 2. Permission Filter
     if (isToday && !isAdmin) {
-        // If today and not admin, only show MY standup
-        // If I am not logged in, I effectively see nothing for today
         if (!currentUser || standup.user_id !== currentUser.id) {
             return false;
         }

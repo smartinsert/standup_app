@@ -5,8 +5,8 @@ import { Standup } from '@/types';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const date = searchParams.get('date'); // YYYY-MM-DD
-    const userId = searchParams.get('userId'); // For filtering by specific user
+    const date = searchParams.get('date');
+    const userId = searchParams.get('userId');
 
     let query = `
       SELECT s.*, m.name as user_name, m.region, m.role
@@ -46,20 +46,16 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
-    // Get user details to cache name if needed, or just rely on ID
     const user = db.prepare('SELECT name FROM team_members WHERE id = ?').get(userId) as { name: string } | undefined;
     if (!user) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Default date to today if not provided
     const targetDate = date || new Date().toISOString().split('T')[0];
 
-    // Check if entry already exists for this user and date
     const existing = db.prepare('SELECT id FROM standups WHERE user_id = ? AND date = ?').get(userId, targetDate) as { id: number } | undefined;
 
     if (existing) {
-      // Update existing entry
       const stmt = db.prepare(`
         UPDATE standups 
         SET yesterday = ?, today = ?, blockers = ?
@@ -68,7 +64,6 @@ export async function POST(request: Request) {
       stmt.run(yesterday || '', today || '', blockers || '', existing.id);
       return NextResponse.json({ id: existing.id, updated: true }, { status: 200 });
     } else {
-      // Create new entry
       const stmt = db.prepare(`
         INSERT INTO standups (user_id, user_name, yesterday, today, blockers, date)
         VALUES (?, ?, ?, ?, ?, ?)
