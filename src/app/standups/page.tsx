@@ -5,8 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import StandupForm from '@/components/standup-form';
 import StandupList from '@/components/standup-list';
 import CalendarFilter from '@/components/calendar-filter';
+import LoginScreen from '@/components/login-screen';
+import { useUser } from '@/context/user-context';
 
 function HomeContent() {
+  const { currentUser, loading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -34,6 +37,9 @@ function HomeContent() {
     setRefreshKey((prev: number) => prev + 1);
   };
 
+  if (loading) return <div className="loading-spinner"></div>;
+  if (!currentUser) return <LoginScreen />;
+
   return (
     <div>
        <h1 className="title-gradient" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
@@ -57,8 +63,6 @@ function HomeContent() {
       <CalendarFilter 
         selectedDate={selectedDate}
         onDateChange={handleDateChange}
-        selectedRegion={selectedRegion}
-        onRegionChange={handleRegionChange}
       />
 
       <StandupForm 
@@ -69,7 +73,6 @@ function HomeContent() {
       <StandupList 
         refreshTrigger={refreshKey} 
         selectedDate={selectedDate}
-        selectedRegion={selectedRegion}
       />
     </div>
   );

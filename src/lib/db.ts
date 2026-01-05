@@ -11,6 +11,7 @@ db.exec(`
     name TEXT NOT NULL UNIQUE,
     region TEXT NOT NULL,
     role TEXT DEFAULT 'member',
+    password TEXT DEFAULT 'password123',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
@@ -38,6 +39,13 @@ try {
   const columns = db.pragma('table_info(standups)') as { name: string }[];
   const hasUserId = columns.some(c => c.name === 'user_id');
   const hasDate = columns.some(c => c.name === 'date');
+  
+  const memberColumns = db.pragma('table_info(team_members)') as { name: string }[];
+  const hasPassword = memberColumns.some(c => c.name === 'password');
+
+  if (!hasPassword) {
+    db.exec("ALTER TABLE team_members ADD COLUMN password TEXT DEFAULT 'password123'");
+  }
 
   if (!hasUserId) {
     db.exec("ALTER TABLE standups ADD COLUMN user_id INTEGER REFERENCES team_members(id)");

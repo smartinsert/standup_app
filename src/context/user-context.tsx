@@ -7,7 +7,7 @@ interface UserContextType {
   currentUser: User | null;
   members: User[];
   loading: boolean;
-  login: (userId: string | number) => void;
+  login: (userId: number, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   refreshMembers: () => void;
 }
@@ -29,25 +29,57 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.error('Failed to fetch members', err);
     } finally {
-      setLoading(false);
+      // Don't set loading false yet, wait for hydration check
     }
   };
 
   useEffect(() => {
-    fetchMembers();
+    const initialize = async () => {
+      await fetchMembers();
+      
+      const storedUser = localStorage.getItem('standup_user');
+      if (storedUser) {
+        try {
+          setCurrentUser(JSON.parse(storedUser));
+        } catch (e) {
+          localStorage.removeItem('standup_user');
+        }
+      }
+      setLoading(false);
+    };
+    
+    initialize();
   }, []);
 
   const refreshMembers = () => {
     fetchMembers();
   };
 
-  const login = (userId: string | number) => {
-    const user = members.find(m => m.id === Number(userId));
-    setCurrentUser(user || null);
+  const login = async (userId: number, password: string) => {
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setCurrentUser(data.user);
+        localStorage.setItem('standup_user', JSON.stringify(data.user));
+        return { success: true };
+      } else {
+        return { success: false, error: data.error || 'Login failed' };
+      }
+    } catch (err) {
+      return { success: false, error: 'Network error' };
+    }
   };
 
   const logout = () => {
     setCurrentUser(null);
+    localStorage.removeItem('standup_user');
   };
 
   return (

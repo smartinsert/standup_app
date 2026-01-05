@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 
-// Dynamic import to prevent SSR issues (document not defined)
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 interface RichTextEditorProps {

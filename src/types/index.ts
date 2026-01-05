@@ -14,7 +14,6 @@ export interface Standup {
   blockers: string;
   created_at?: string;
   
-  // Joins
   name?: string;
   region?: string;
   role?: string;

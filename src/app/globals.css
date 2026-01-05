@@ -8,6 +8,64 @@
   --muted: #64748b;
   --card-bg: rgba(30, 41, 59, 0.7);
   --border: rgba(148, 163, 184, 0.1);
+  --grad-start: #8b5cf6;
+  --grad-end: #38bdf8;
+}
+
+[data-theme='ocean'] {
+  --background: #081b25;
+  --foreground: #e0f2fe;
+  --primary: #0ea5e9;
+  --primary-hover: #0284c7;
+  --secondary: #0f2e3d;
+  --accent: #22d3ee;
+  --muted: #94a3b8;
+  --card-bg: rgba(15, 46, 61, 0.7);
+  --border: rgba(34, 211, 238, 0.1);
+  --grad-start: #0ea5e9;
+  --grad-end: #22d3ee;
+}
+
+[data-theme='sunset'] {
+  --background: #1a1625;
+  --foreground: #fdf2f8;
+  --primary: #ec4899;
+  --primary-hover: #db2777;
+  --secondary: #2d2138;
+  --accent: #f472b6;
+  --muted: #a78bfa;
+  --card-bg: rgba(45, 33, 56, 0.7);
+  --border: rgba(236, 72, 153, 0.1);
+  --grad-start: #8b5cf6;
+  --grad-end: #ec4899;
+}
+
+[data-theme='forest'] {
+  --background: #0d1a12;
+  --foreground: #ecfdf5;
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --secondary: #1a2e23;
+  --accent: #34d399;
+  --muted: #6ee7b7;
+  --card-bg: rgba(26, 46, 35, 0.7);
+  --border: rgba(16, 185, 129, 0.1);
+  --grad-start: #10b981;
+  --grad-end: #34d399;
+}
+
+[data-theme='light'] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --secondary: #f1f5f9;
+  --accent: #0284c7;
+  --muted: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --border: rgba(148, 163, 184, 0.2);
+  --grad-start: #8b5cf6;
+  --grad-end: #0ea5e9;
 }
 
 * {
@@ -25,7 +83,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #fff;
+  color: var(--foreground);
   font-weight: 700;
   letter-spacing: -0.025em;
   margin-bottom: 1rem;
@@ -80,10 +138,10 @@ select,
 textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: var(--secondary);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  color: #fff;
+  color: var(--foreground);
   font-family: inherit;
   font-size: 1rem;
   transition: border-color 0.2s ease, focus-ring 0.2s ease;
@@ -181,7 +239,7 @@ button.primary-btn:disabled {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 2.5rem;
-  background: linear-gradient(to right, #ffffff, #94a3b8);
+  background: linear-gradient(to right, #ffffff, var(--muted));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -198,18 +256,18 @@ button.primary-btn:disabled {
   border-color: var(--border) !important;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
-  background-color: rgba(15, 23, 42, 0.5);
-  color: #fff;
+  background-color: var(--secondary);
+  color: var(--foreground);
   font-family: inherit;
 }
 .ql-stroke {
-  stroke: #cbd5e1 !important;
+  stroke: var(--foreground) !important;
 }
 .ql-fill {
-  fill: #cbd5e1 !important;
+  fill: var(--foreground) !important;
 }
 .ql-picker {
-  color: #cbd5e1 !important;
+  color: var(--foreground) !important;
 }
 
 /* Rich Text Rendering Fixes */
